@@ -13,4 +13,12 @@ public class ClientesController : ControllerBase {
         var result = ClienteData.Get().listaClientes;
         return Ok(result);
     }
+
+    [HttpPost]
+    [Route("post")]
+    public ActionResult Post([FromBody] Cliente cliente) {
+        ClienteData data = ClienteData.Get();
+        data.listaClientes.Add(cliente);
+        return Ok();
+    }
 }
