@@ -1,8 +1,8 @@
 {
   "version": 2,
-  "dgSpecHash": "Nhe34UPtTCG8CWXQLNf2+m2gpnLVPzhRY0rFctmwEp/BlYOM47BQ6wjEtmLjtWFxHUMMut4x84WS1NksEKG1Ng==",
+  "dgSpecHash": "6BT09/D5bV97maBvNOIYJkCV55GEhi2qjdgjb0SEOnf3VPTgWqaMOkUvfq/mzPNvZBfYp9hNakEYOqQmxR6nyw==",
   "success": true,
-  "projectFilePath": "C:\\Users\\7755287.UNIVALI\\Downloads\\Allog 24.05\\src\\Allog2405.Api\\Allog2405.Api.csproj",
+  "projectFilePath": "C:\\Users\\7755287.UNIVALI\\Downloads\\Allog 2605\\AllogAula2405\\src\\Allog2405.Api\\Allog2405.Api.csproj",
   "expectedPackageFiles": [
     "C:\\Users\\7755287.UNIVALI\\.nuget\\packages\\microsoft.aspnetcore.openapi\\7.0.0\\microsoft.aspnetcore.openapi.7.0.0.nupkg.sha512",
     "C:\\Users\\7755287.UNIVALI\\.nuget\\packages\\microsoft.extensions.apidescription.server\\6.0.5\\microsoft.extensions.apidescription.server.6.0.5.nupkg.sha512",
