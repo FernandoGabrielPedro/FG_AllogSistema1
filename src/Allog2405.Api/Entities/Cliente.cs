@@ -5,3 +5,9 @@ public class Cliente {
     public string nome {get; set;} = string.Empty;
     public string cpf {get; set;} = string.Empty;
 }
+
+
+public class ClienteDTO {
+    public string? nome {get; set;}
+    public string? cpf {get; set;}
+}
