@@ -1,7 +1,8 @@
 using System.Text.RegularExpressions;
+using Microsoft.AspNetCore.Mvc;
 using Allog2405.Api;
 using Allog2405.Api.Entities;
-using Microsoft.AspNetCore.Mvc;
+using Allog2405.Api.Models;
 
 namespace Allog2405.Api.Controllers;
 
