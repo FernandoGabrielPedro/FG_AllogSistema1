@@ -1,6 +1,7 @@
 using System.Text.RegularExpressions;
 using Allog2405.Api;
 using Allog2405.Api.Entities;
+using Allog2405.Api.Models;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Allog2405.Api.Controllers;
@@ -38,7 +39,11 @@ public class ClientesController : ControllerBase {
         List<Cliente> listaClientes = ClienteData.Get().listaClientes;
         List<ClienteDTO> listaClientesResult = new List<ClienteDTO>();
         foreach(Cliente c in listaClientes) {
-            listaClientesResult.Add(new ClienteDTO(c));
+            listaClientesResult.Add(new ClienteDTO {
+                primeiroNome = c.primeiroNome,
+                ultimoNome = c.ultimoNome,
+                cpf = c.cpf
+            });
         }
         return Ok(listaClientesResult);
     }
@@ -48,10 +53,15 @@ public class ClientesController : ControllerBase {
         Cliente? cliente = ClienteData.Get().listaClientes.FirstOrDefault(c => c.id == id, null);
         if (cliente == null) return NotFound();
 
-        ClienteDTO clienteResult = new ClienteDTO(cliente);
+        ClienteDTO clienteResult = new ClienteDTO{
+            primeiroNome = cliente.primeiroNome,
+            ultimoNome = cliente.ultimoNome,
+            cpf = cliente.cpf
+        };
         return Ok(clienteResult);
     }
 
+    /*
     [HttpGet("cpf/{cpf}")]
     public ActionResult<ClienteDTO> GetClientePorCpf(string cpf) {
         Cliente? cliente = ClienteData.Get().listaClientes.FirstOrDefault(c => c.cpf == cpf, null);
@@ -109,7 +119,7 @@ public class ClientesController : ControllerBase {
     }
 
     [HttpDelete("{id}")]
-    public ActionResult<Cliente> DeleteClientePorId(int id) {
+    public ActionResult DeleteClientePorId(int id) {
         Cliente cliente = ClienteData.Get().listaClientes.FirstOrDefault(n => n.id == id);
 
         if (cliente == null) return NotFound();
@@ -117,4 +127,5 @@ public class ClientesController : ControllerBase {
         ClienteData.Get().listaClientes.Remove(cliente);
         return NoContent();
     }
+    */
 }
