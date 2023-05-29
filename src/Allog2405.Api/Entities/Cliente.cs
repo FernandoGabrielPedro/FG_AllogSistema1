@@ -17,4 +17,6 @@ public class ClienteDTO {
         this.nome = cliente.nome;
         this.cpf = cliente.cpf;
     }
+
+    public ClienteDTO() {}
 }

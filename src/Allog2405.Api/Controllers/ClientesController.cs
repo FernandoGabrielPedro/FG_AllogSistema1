@@ -67,9 +67,9 @@ public class ClientesController : ControllerBase {
 
         int cpfValidacao = ValidarCpf(clienteBody.cpf);
         switch(cpfValidacao) {
-            case 1: return BadRequest("BADREQUEST: CPF é nulo.");
-            case 2: return BadRequest("BADREQUEST: CPF é inválido.");
-            case 3: return Conflict("CONFLITO: CPF já utilizado.");
+            case 1: return UnprocessableEntity("UNPROCESSABLEENTITY: CPF é nulo.");
+            case 2: return UnprocessableEntity("UNPROCESSABLEENTITY: CPF é inválido.");
+            case 3: return BadRequest("BADREQUEST: CPF já utilizado.");
         }
         clienteBody.nome ??= String.Empty;
 
@@ -99,8 +99,8 @@ public class ClientesController : ControllerBase {
         if(clienteBody.cpf != null) {
             int cpfValidacao = ValidarCpf(clienteBody.cpf);
             switch(cpfValidacao) {
-                case 2: return BadRequest("BADREQUEST: CPF é inválido.");
-                case 3: return Conflict("CONFLITO: CPF já utilizado.");
+                case 2: return UnprocessableEntity("UNPROCESSABLEENTITY: CPF é inválido.");
+                case 3: return BadRequest("BADREQUEST: CPF já utilizado.");
             }
             cliente.cpf = clienteBody.cpf;
         }
@@ -110,12 +110,11 @@ public class ClientesController : ControllerBase {
 
     [HttpDelete("{id}")]
     public ActionResult<Cliente> DeleteClientePorId(int id) {
-        ClienteData _data = ClienteData.Get();
+        Cliente cliente = ClienteData.Get().listaClientes.FirstOrDefault(n => n.id == id);
 
-        Cliente? cliente = _data.listaClientes.FirstOrDefault(n => n.id == id, null);
         if (cliente == null) return NotFound();
 
-        _data.listaClientes.Remove(cliente);
+        ClienteData.Get().listaClientes.Remove(cliente);
         return NoContent();
     }
 }
