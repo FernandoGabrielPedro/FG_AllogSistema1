@@ -109,7 +109,7 @@ public class ClientesController : ControllerBase {
     }
 
     [HttpDelete("{id}")]
-    public ActionResult<Cliente> DeleteClientePorId(int id) {
+    public ActionResult DeleteClientePorId(int id) {
         Cliente cliente = ClienteData.Get().listaClientes.FirstOrDefault(n => n.id == id);
 
         if (cliente == null) return NotFound();
