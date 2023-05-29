@@ -34,25 +34,35 @@ public class ClientesController : ControllerBase {
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<Cliente>> GetClientes() {
-        List<Cliente> result = ClienteData.Get().listaClientes;
-        return Ok(result);
+    public ActionResult<IEnumerable<ClienteDTO>> GetClientes() {
+        List<Cliente> listaClientes = ClienteData.Get().listaClientes;
+        List<ClienteDTO> listaClientesResult = new List<ClienteDTO>();
+        foreach(Cliente c in listaClientes) {
+            listaClientesResult.Add(new ClienteDTO(c));
+        }
+        return Ok(listaClientesResult);
     }
 
     [HttpGet("{id:int:min(1)}", Name = "GetClientePorId")]
-    public ActionResult<Cliente> GetClientePorId([FromRoute] int id) {
+    public ActionResult<ClienteDTO> GetClientePorId(int id) {
         Cliente? cliente = ClienteData.Get().listaClientes.FirstOrDefault(c => c.id == id, null);
-        return cliente != null ? Ok(cliente) : NotFound();
+        if (cliente == null) return NotFound();
+
+        ClienteDTO clienteResult = new ClienteDTO(cliente);
+        return Ok(clienteResult);
     }
 
     [HttpGet("cpf/{cpf}")]
-    public ActionResult<Cliente> GetClientePorCpf([FromRoute] string cpf) {
+    public ActionResult<ClienteDTO> GetClientePorCpf(string cpf) {
         Cliente? cliente = ClienteData.Get().listaClientes.FirstOrDefault(c => c.cpf == cpf, null);
-        return cliente != null ? Ok(cliente) : NotFound();
+        if(cliente == null) return NotFound();
+
+        ClienteDTO clienteResult = new ClienteDTO(cliente);
+        return Ok(clienteResult);
     }
 
     [HttpPost]
-    public ActionResult CreateCliente([FromBody] ClienteDTO clienteBody) {
+    public ActionResult CreateCliente(ClienteDTO clienteBody) {
         ClienteData _data = ClienteData.Get();
 
         int cpfValidacao = ValidarCpf(clienteBody.cpf);
@@ -79,7 +89,7 @@ public class ClientesController : ControllerBase {
     }
 
     [HttpPut("{id}")]
-    public ActionResult EditCliente([FromRoute] int id, [FromBody] ClienteDTO clienteBody) {
+    public ActionResult EditCliente(int id, ClienteDTO clienteBody) {
         ClienteData _data = ClienteData.Get();
 
         Cliente? cliente = _data.listaClientes.FirstOrDefault(n => n.id == id, null);
@@ -95,17 +105,17 @@ public class ClientesController : ControllerBase {
             cliente.cpf = clienteBody.cpf;
         }
 
-        return new NoContentResult();
+        return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public ActionResult<Cliente> DeleteClientePorId([FromRoute] int id) {
+    public ActionResult<Cliente> DeleteClientePorId(int id) {
         ClienteData _data = ClienteData.Get();
 
         Cliente? cliente = _data.listaClientes.FirstOrDefault(n => n.id == id, null);
         if (cliente == null) return NotFound();
 
         _data.listaClientes.Remove(cliente);
-        return new NoContentResult();
+        return NoContent();
     }
 }

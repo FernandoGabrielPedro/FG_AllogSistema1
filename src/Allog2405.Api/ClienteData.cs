@@ -10,12 +10,12 @@ public class ClienteData {
         this.listaClientes = new List<Cliente>{
             new Cliente {
                 id = 1,
-                nome = "SSSSSSSS",
+                nome = "Pedro",
                 cpf = "12345678901"
             },
                 new Cliente {
                 id = 2,
-                nome = "qwert",
+                nome = "João",
                 cpf = "98765432109"
             }
         };
