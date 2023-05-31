@@ -1,5 +1,6 @@
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.JsonPatch;
 using Allog2405.Api;
 using Allog2405.Api.Entities;
 using Allog2405.Api.Models;
@@ -16,12 +17,15 @@ public class ClientesController : ControllerBase {
     //1 = CPF nulo
     //2 = CPF inválido
     //3 = CPF já existente
+        //case 1: return UnprocessableEntity("UNPROCESSABLEENTITY: CPF é nulo.");
+        //case 2: return UnprocessableEntity("UNPROCESSABLEENTITY: CPF é inválido.");
+        //case 3: return BadRequest("BADREQUEST: CPF já utilizado.");
     private int ValidarCpf(string cpf) {
-        string cpfRegexExp = @"^[0-9]{11}$";
+        string cpfRegexExpressao = @"^[0-9]{11}$";
 
         ClienteData _data = ClienteData.Get();
 
-        Regex cpfRegex = new Regex(cpfRegexExp);
+        Regex cpfRegex = new Regex(cpfRegexExpressao);
 
         if(cpf == null)
             return 1;
@@ -36,86 +40,103 @@ public class ClientesController : ControllerBase {
 
     [HttpGet]
     public ActionResult<IEnumerable<ClienteDTO>> GetClientes() {
-        List<Cliente> listaClientes = ClienteData.Get().listaClientes;
-        List<ClienteDTO> listaClientesResult = new List<ClienteDTO>();
-        foreach(Cliente c in listaClientes) {
-            listaClientesResult.Add(new ClienteDTO(c));
-        }
-        return Ok(listaClientesResult);
+        List<Cliente> listaClientesFromData = ClienteData.Get().listaClientes;
+        IEnumerable<ClienteDTO> listaClientesToReturn = ClienteData.Get().listaClientes.Select(c => new ClienteDTO(c));
+        return Ok(listaClientesToReturn);
     }
 
     [HttpGet("{id:int:min(1)}", Name = "GetClientePorId")]
     public ActionResult<ClienteDTO> GetClientePorId(int id) {
-        Cliente? cliente = ClienteData.Get().listaClientes.FirstOrDefault(c => c.id == id, null);
-        if (cliente == null) return NotFound();
+        Cliente? clienteEntity = ClienteData.Get().listaClientes.FirstOrDefault(c => c.id == id, null);
+        if (clienteEntity == null) return NotFound();
 
-        ClienteDTO clienteResult = new ClienteDTO(cliente);
-        return Ok(clienteResult);
+        ClienteDTO clienteToReturn = new ClienteDTO(clienteEntity);
+        return Ok(clienteToReturn);
     }
 
     [HttpGet("cpf/{cpf}")]
     public ActionResult<ClienteDTO> GetClientePorCpf(string cpf) {
-        Cliente? cliente = ClienteData.Get().listaClientes.FirstOrDefault(c => c.cpf == cpf, null);
-        if(cliente == null) return NotFound();
+        Cliente? clienteEntity = ClienteData.Get().listaClientes.FirstOrDefault(c => c.cpf == cpf, null);
+        if(clienteEntity == null) return NotFound();
 
-        ClienteDTO clienteResult = new ClienteDTO(cliente);
-        return Ok(clienteResult);
+        ClienteDTO clienteToReturn = new ClienteDTO(clienteEntity);
+        return Ok(clienteToReturn);
     }
 
     [HttpPost]
-    public ActionResult CreateCliente(ClienteDTO clienteBody) {
-        ClienteData _data = ClienteData.Get();
+    public ActionResult<ClienteDTO> CreateCliente(ClienteForCreationDTO clienteForCreationDTO) {
 
-        int cpfValidacao = ValidarCpf(clienteBody.cpf);
+        int cpfValidacao = ValidarCpf(clienteForCreationDTO.cpf);
         switch(cpfValidacao) {
-            case 1: return UnprocessableEntity("UNPROCESSABLEENTITY: CPF é nulo.");
-            case 2: return UnprocessableEntity("UNPROCESSABLEENTITY: CPF é inválido.");
-            case 3: return BadRequest("BADREQUEST: CPF já utilizado.");
+            case 1: return UnprocessableEntity();
+            case 2: return UnprocessableEntity();
+            case 3: return BadRequest();
         }
-        clienteBody.nome ??= String.Empty;
+        clienteForCreationDTO.nome ??= String.Empty;
 
-        Cliente newCliente = new Cliente {
-            id = _data.listaClientes.Max(c => c.id) + 1,
-            nome = clienteBody.nome,
-            cpf = clienteBody.cpf
+        Cliente clienteEntity = new Cliente {
+            id = ClienteData.Get().listaClientes.Max(c => c.id) + 1,
+            nome = clienteForCreationDTO.nome,
+            cpf = clienteForCreationDTO.cpf
         };
 
-        _data.listaClientes.Add(newCliente);
+        ClienteData.Get().listaClientes.Add(clienteEntity);
+
+        ClienteDTO clienteToReturn = new ClienteDTO(clienteEntity);
 
         return CreatedAtRoute(
             "GetClientePorId",
-            new {id = newCliente.id},
-            newCliente
+            new {id = clienteToReturn.id},
+            clienteToReturn
         );
     }
 
     [HttpPut("{id}")]
-    public ActionResult EditCliente(int id, ClienteDTO clienteBody) {
-        ClienteData _data = ClienteData.Get();
+    public ActionResult<ClienteDTO> EditCliente(int id, ClienteForEditionDTO clienteForEditionDTO) {
 
-        Cliente? cliente = _data.listaClientes.FirstOrDefault(n => n.id == id, null);
-        if(cliente == null) return NotFound();
+        if(clienteForEditionDTO.id != id) return BadRequest();
 
-        if(clienteBody.nome != null) cliente.nome = clienteBody.nome;
-        if(clienteBody.cpf != null) {
-            int cpfValidacao = ValidarCpf(clienteBody.cpf);
+        Cliente? clienteEntity = ClienteData.Get().listaClientes.FirstOrDefault(n => n.id == id, null);
+        if(clienteEntity == null) return NotFound();
+        
+        if(clienteForEditionDTO.nome != null) clienteEntity.nome = clienteForEditionDTO.nome;
+        if(clienteForEditionDTO.cpf != null) {
+            int cpfValidacao = ValidarCpf(clienteForEditionDTO.cpf);
             switch(cpfValidacao) {
-                case 2: return UnprocessableEntity("UNPROCESSABLEENTITY: CPF é inválido.");
-                case 3: return BadRequest("BADREQUEST: CPF já utilizado.");
+                case 2: return UnprocessableEntity();
+                case 3: return BadRequest();
             }
-            cliente.cpf = clienteBody.cpf;
+            clienteEntity.cpf = clienteForEditionDTO.cpf;
         }
 
         return NoContent();
     }
 
     [HttpDelete("{id}")]
-    public ActionResult DeleteClientePorId(int id) {
-        Cliente cliente = ClienteData.Get().listaClientes.FirstOrDefault(n => n.id == id);
+    public ActionResult<ClienteDTO> DeleteClientePorId(int id) {
 
-        if (cliente == null) return NotFound();
+        Cliente clienteEntity = ClienteData.Get().listaClientes.FirstOrDefault(n => n.id == id);
+        if (clienteEntity == null) return NotFound();
 
-        ClienteData.Get().listaClientes.Remove(cliente);
+        ClienteData.Get().listaClientes.Remove(clienteEntity);
+        return NoContent();
+    }
+
+    [HttpPatch("{id}")]
+    public ActionResult<ClienteDTO> PatchCliente([FromRoute] int id, [FromBody] JsonPatchDocument<ClienteForPatchDTO> patchDocument) {
+        Cliente clienteEntity = ClienteData.Get().listaClientes.FirstOrDefault(n => n.id == id);
+        if (clienteEntity == null) return NotFound();
+
+        ClienteForPatchDTO clienteToPatch = new ClienteForPatchDTO{
+            nome = clienteEntity.nome,
+            cpf = clienteEntity.cpf
+        };
+
+        patchDocument.ApplyTo(clienteToPatch);
+
+        clienteEntity.nome = clienteToPatch.nome;
+        clienteEntity.cpf = clienteToPatch.cpf;
+
         return NoContent();
     }
 }
