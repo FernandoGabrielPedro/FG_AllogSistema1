@@ -72,10 +72,11 @@ public class ClientesController : ControllerBase {
             case 2: return UnprocessableEntity();
             case 3: return BadRequest();
         }
-        clienteForCreationDTO.nome ??= String.Empty;
+
+        int newId = (ClienteData.Get().listaClientes.First() == null) ? 0 : ClienteData.Get().listaClientes.Max(c => c.id) + 1;
 
         Cliente clienteEntity = new Cliente {
-            id = ClienteData.Get().listaClientes.Max(c => c.id) + 1,
+            id = newId,
             nome = clienteForCreationDTO.nome,
             cpf = clienteForCreationDTO.cpf
         };
@@ -138,5 +139,34 @@ public class ClientesController : ControllerBase {
         clienteEntity.cpf = clienteToPatch.cpf;
 
         return NoContent();
+    }
+
+    [HttpPut("{id}/createEndereco")]
+    public ActionResult<ClienteDTO> CreateEnderecoToCliente(int id, [FromBody] EnderecoForCreationDTO enderecoFromBody) {
+        Cliente clienteEntity = ClienteData.Get().listaClientes.FirstOrDefault(n => n.id == id);
+        if (clienteEntity == null) return NotFound();
+
+        //id = ClienteData.Get().listaClientes.Max(c => c.id) + 1,
+
+        int newId = (clienteEntity.listaEnderecos.Any()) ? clienteEntity.listaEnderecos.Max(e => e.id) + 1 : 1;
+
+        Endereco enderecoEntity = new Endereco{
+            id = newId,
+            logradouro = enderecoFromBody.logradouro,
+            numero = enderecoFromBody.numero,
+            bairro = enderecoFromBody.bairro,
+            cidade = enderecoFromBody.cidade,
+            estado = enderecoFromBody.estado,
+        };
+
+        clienteEntity.listaEnderecos.Add(enderecoEntity);
+
+        ClienteDTO clienteToReturn = new ClienteDTO(clienteEntity);
+
+        return CreatedAtRoute(
+            "GetClientePorId",
+            new {id = clienteToReturn.id},
+            clienteToReturn
+        );
     }
 }
