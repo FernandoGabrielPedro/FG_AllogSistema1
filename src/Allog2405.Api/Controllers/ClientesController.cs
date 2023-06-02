@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.JsonPatch;
 using Allog2405.Api;
 using Allog2405.Api.Entities;
 using Allog2405.Api.Models;
+using Microsoft.AspNetCore.Mvc.Infrastructure;
 
 namespace Allog2405.Api.Controllers;
 
@@ -70,11 +71,12 @@ public class ClientesController : ControllerBase {
     [HttpPost]
     public ActionResult<ClienteForGetClienteDTO> CreateCliente(ClienteForCreationDTO clienteForCreationDTO) {
 
-        int cpfValidacao = ValidarCpf(clienteForCreationDTO.cpf);
-        switch(cpfValidacao) {
-            case 1: return UnprocessableEntity();
-            case 2: return UnprocessableEntity();
-            case 3: return BadRequest();
+        if(!ModelState.IsValid) {
+            Response.ContentType = "application/problem+json";
+            ProblemDetailsFactory problemDetailsFactory = HttpContext.RequestServices.GetRequiredService<ProblemDetailsFactory>();
+            ValidationProblemDetails validationProblemDetails = problemDetailsFactory.CreateValidationProblemDetails(HttpContext, ModelState);
+            validationProblemDetails.Status = StatusCodes.Status422UnprocessableEntity;
+            return UnprocessableEntity(validationProblemDetails);
         }
 
         int newId = (ClienteData.Get().listaClientes.Any()) ? ClienteData.Get().listaClientes.Max(c => c.id) + 1 : 1;
@@ -100,7 +102,7 @@ public class ClientesController : ControllerBase {
     [HttpPut("{id}")]
     public ActionResult<ClienteForGetClienteDTO> EditCliente(int id, ClienteForEditionDTO clienteForEditionDTO) {
 
-        if(clienteForEditionDTO.id != id) return BadRequest();
+        if(clienteForEditionDTO.id != id) return BadRequest(ModelState);
 
         Cliente? clienteEntity = ClienteData.Get().listaClientes.FirstOrDefault(c => c.id == id, null);
         if(clienteEntity == null) return NotFound();

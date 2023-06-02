@@ -90,4 +90,30 @@ public class EnderecosController : ControllerBase {
         EnderecoData.Get().listaEnderecos.Remove(enderecoEntity);
         return NoContent();
     }
+
+    [HttpPatch("{id}")]
+    public ActionResult<EnderecoForGetEnderecoDTO> PatchEndereco([FromRoute] int id, [FromBody] JsonPatchDocument<EnderecoForPatchDTO> patchDocument) {
+        Endereco enderecoEntity = EnderecoData.Get().listaEnderecos.FirstOrDefault(n => n.id == id);
+        if (enderecoEntity == null) return NotFound();
+
+        EnderecoForPatchDTO enderecoToPatch = new EnderecoForPatchDTO{
+            idCliente = enderecoEntity.idCliente,
+            logradouro = enderecoEntity.logradouro,
+            numero = enderecoEntity.numero,
+            bairro = enderecoEntity.bairro,
+            cidade = enderecoEntity.cidade,
+            estado = enderecoEntity.estado,
+        };
+
+        patchDocument.ApplyTo(enderecoToPatch);
+
+        enderecoEntity.idCliente = (int)enderecoToPatch.idCliente;
+        enderecoEntity.logradouro = enderecoToPatch.logradouro;
+        enderecoEntity.numero = (int)enderecoToPatch.numero;
+        enderecoEntity.bairro = enderecoToPatch.bairro;
+        enderecoEntity.cidade = enderecoToPatch.cidade;
+        enderecoEntity.estado = enderecoToPatch.estado;
+
+        return NoContent();
+    }
 }

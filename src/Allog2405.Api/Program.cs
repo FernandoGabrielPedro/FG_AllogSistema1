@@ -11,6 +11,8 @@ builder.WebHost.ConfigureKestrel(options => {
 //Para usá-lo é necessário do pacote Newtonsoft, que não é instalado por padrão, já que o pacote JsonPatch o usa no lugar da biblioteca padrão, System.Text.Json.
 builder.Services.AddControllers(options =>
     options.InputFormatters.Insert(0, MyJPIF.GetJsonPatchInputFormatter())
+).ConfigureApiBehaviorOptions(options =>
+    options.SuppressModelStateInvalidFilter = true
 );
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
