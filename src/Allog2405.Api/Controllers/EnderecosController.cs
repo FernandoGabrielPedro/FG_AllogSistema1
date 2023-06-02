@@ -12,26 +12,33 @@ namespace Allog2405.Api.Controllers;
 public class EnderecosController : ControllerBase {
 
     [HttpGet]
-    public ActionResult<IEnumerable<EnderecoForGetEnderecoDTO>> GetEnderecos() {
-        IEnumerable<EnderecoForGetEnderecoDTO> listaEnderecosToReturn = EnderecoData.Get().listaEnderecos.Select(e => 
-            new EnderecoForGetEnderecoDTO(e,
+    public ActionResult<IEnumerable<EnderecoComClienteDTO>> GetEnderecos() {
+        IEnumerable<EnderecoComClienteDTO> listaEnderecosToReturn = EnderecoData.Get().listaEnderecos.Select(e => 
+            new EnderecoComClienteDTO(e,
                 ClienteData.Get().listaClientes.FirstOrDefault(c => c.id == e.idCliente))
         );
         return Ok(listaEnderecosToReturn);
     }
 
     [HttpGet("{id:int:min(1)}", Name = "GetEnderecoPorId")]
-    public ActionResult<EnderecoForGetEnderecoDTO> GetEnderecoPorId(int id) {
+    public ActionResult<EnderecoComClienteDTO> GetEnderecoPorId(int id) {
         Endereco enderecoEntity = EnderecoData.Get().listaEnderecos.FirstOrDefault(e => e.id == id);
         if (enderecoEntity == null) return NotFound();
 
         Cliente clienteEntity = ClienteData.Get().listaClientes.FirstOrDefault(c => c.id == enderecoEntity.idCliente);
-        EnderecoForGetEnderecoDTO enderecoToReturn = new EnderecoForGetEnderecoDTO(enderecoEntity, clienteEntity);
+        EnderecoComClienteDTO enderecoToReturn = new EnderecoComClienteDTO(enderecoEntity, clienteEntity);
         return Ok(enderecoToReturn);
     }
 
+    [HttpGet("idCliente/{idCliente}")]
+    public ActionResult<IEnumerable<EnderecoDTO>> GetEnderecosPorIdCliente(int idCliente) {
+        IEnumerable<EnderecoDTO> listaEnderecosToReturn = EnderecoData.Get().listaEnderecos
+            .FindAll(e => e.idCliente == idCliente).Select(e => new EnderecoDTO(e));
+        return Ok(listaEnderecosToReturn);
+    }
+
     [HttpPost]
-    public ActionResult<EnderecoForGetEnderecoDTO> CreateEndereco(EnderecoForCreationDTO enderecoForCreationDTO) {
+    public ActionResult<EnderecoComClienteDTO> CreateEndereco(EnderecoForCreationDTO enderecoForCreationDTO) {
 
         Cliente clienteEntity = ClienteData.Get().listaClientes.FirstOrDefault(c => c.id == enderecoForCreationDTO.idCliente);
         if (clienteEntity == null) return NotFound();
@@ -50,7 +57,7 @@ public class EnderecosController : ControllerBase {
 
         EnderecoData.Get().listaEnderecos.Add(enderecoEntity);
 
-        EnderecoForGetEnderecoDTO enderecoToReturn = new EnderecoForGetEnderecoDTO(enderecoEntity, clienteEntity);
+        EnderecoComClienteDTO enderecoToReturn = new EnderecoComClienteDTO(enderecoEntity, clienteEntity);
 
         return CreatedAtRoute(
             "GetEnderecoPorId",
@@ -60,7 +67,7 @@ public class EnderecosController : ControllerBase {
     }
 
     [HttpPut("{id}")]
-    public ActionResult<EnderecoForGetEnderecoDTO> EditEndereco(int id, EnderecoForEditionDTO enderecoForEditionDTO) {
+    public ActionResult<EnderecoComClienteDTO> EditEndereco(int id, EnderecoForEditionDTO enderecoForEditionDTO) {
 
         if(enderecoForEditionDTO.id != id) return BadRequest();
 
@@ -82,7 +89,7 @@ public class EnderecosController : ControllerBase {
     }
 
     [HttpDelete("{id}")]
-    public ActionResult<EnderecoForGetEnderecoDTO> DeleteEnderecoPorId(int id) {
+    public ActionResult<EnderecoComClienteDTO> DeleteEnderecoPorId(int id) {
 
         Endereco enderecoEntity = EnderecoData.Get().listaEnderecos.FirstOrDefault(e => e.id == id);
         if (enderecoEntity == null) return NotFound();
@@ -92,7 +99,7 @@ public class EnderecosController : ControllerBase {
     }
 
     [HttpPatch("{id}")]
-    public ActionResult<EnderecoForGetEnderecoDTO> PatchEndereco([FromRoute] int id, [FromBody] JsonPatchDocument<EnderecoForPatchDTO> patchDocument) {
+    public ActionResult<EnderecoComClienteDTO> PatchEndereco([FromRoute] int id, [FromBody] JsonPatchDocument<EnderecoForPatchDTO> patchDocument) {
         Endereco enderecoEntity = EnderecoData.Get().listaEnderecos.FirstOrDefault(n => n.id == id);
         if (enderecoEntity == null) return NotFound();
 

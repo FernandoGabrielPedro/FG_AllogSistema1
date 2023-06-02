@@ -237,6 +237,28 @@
 					"response": []
 				},
 				{
+					"name": "Get Endereço (IDCliente)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{port}}/api/enderecos/idCliente/{{idCliente}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"enderecos",
+								"idCliente",
+								"{{idCliente}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
 					"name": "Post Endereço",
 					"request": {
 						"method": "POST",
@@ -300,6 +322,42 @@
 					"request": {
 						"method": "DELETE",
 						"header": [],
+						"url": {
+							"raw": "http://localhost:{{port}}/api/enderecos/{{id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"enderecos",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patch Endereço (ID)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json-patch+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"op\": \"replace\",\r\n        \"path\": \"{Path}\",\r\n        \"value\": \"{Value}\"\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
 						"url": {
 							"raw": "http://localhost:{{port}}/api/enderecos/{{id}}",
 							"protocol": "http",
