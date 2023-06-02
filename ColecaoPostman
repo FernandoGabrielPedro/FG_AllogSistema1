@@ -7,270 +7,316 @@
 	},
 	"item": [
 		{
-			"name": "Get Clientes",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:{{port}}/api/clientes/",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "{{port}}",
-					"path": [
-						"api",
-						"clientes",
-						""
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Cliente (ID)",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:{{port}}/api/clientes/{{id}}",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "{{port}}",
-					"path": [
-						"api",
-						"clientes",
-						"{{id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Get Cliente (CPF)",
-			"request": {
-				"method": "GET",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:{{port}}/api/clientes/cpf/{{cpf}}",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "{{port}}",
-					"path": [
-						"api",
-						"clientes",
-						"cpf",
-						"{{cpf}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Post Cliente",
-			"request": {
-				"method": "POST",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"id\": \"ID\",\r\n    \"nome\": \"Nome\",\r\n    \"cpf\": \"00000000000\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+			"name": "Clientes",
+			"item": [
+				{
+					"name": "Get Clientes",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{port}}/api/clientes/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"clientes",
+								""
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://localhost:{{port}}/api/clientes",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "{{port}}",
-					"path": [
-						"api",
-						"clientes"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Put Cliente (ID)",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"nome\": \"Nome\",\r\n    \"cpf\": \"00000000000\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Get Cliente (ID)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{port}}/api/clientes/{{id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"clientes",
+								"{{id}}"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://localhost:{{port}}/api/clientes/{{id}}",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "{{port}}",
-					"path": [
-						"api",
-						"clientes",
-						"{{id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Delete Cliente (ID)",
-			"request": {
-				"method": "DELETE",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:{{port}}/api/clientes/{{id}}",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "{{port}}",
-					"path": [
-						"api",
-						"clientes",
-						"{{id}}"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Patch Cliente (ID)",
-			"request": {
-				"method": "PATCH",
-				"header": [
-					{
-						"key": "Content-Type",
-						"value": "application/json-patch+json",
-						"type": "text"
-					}
-				],
-				"body": {
-					"mode": "raw",
-					"raw": "[\r\n    {\r\n        \"op\": \"replace\",\r\n        \"path\": \"{Path}\",\r\n        \"value\": \"{Value}\"\r\n    }\r\n]",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Get Cliente (CPF)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{port}}/api/clientes/cpf/{{cpf}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"clientes",
+								"cpf",
+								"{{cpf}}"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://localhost:{{port}}/api/clientes/1",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "{{port}}",
-					"path": [
-						"api",
-						"clientes",
-						"1"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Inserir Endereço Em Cliente (ID)",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"logradouro\":\"Logradouro\",\r\n    \"numero\":\"Numero\",\r\n    \"bairro\":\"Bairro\",\r\n    \"cidade\":\"Cidade\",\r\n    \"estado\":\"Estado\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Post Cliente",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Nome\",\r\n    \"cpf\": \"00000000000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{port}}/api/clientes",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"clientes"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://localhost:{{port}}/api/clientes/{{id}}/createEndereco",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "{{port}}",
-					"path": [
-						"api",
-						"clientes",
-						"{{id}}",
-						"createEndereco"
-					]
-				}
-			},
-			"response": []
-		},
-		{
-			"name": "Editar Endereço De Cliente (IDCliente, IDEndereço)",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"body": {
-					"mode": "raw",
-					"raw": "{\r\n    \"idCliente\":\"IdCliente\",\r\n    \"idEndereco\":\"IdEndereco\",\r\n    \"logradouro\":\"Logradouro\",\r\n    \"numero\":\"Numero\",\r\n    \"bairro\":\"Bairro\",\r\n    \"cidade\":\"Cidade\",\r\n    \"estado\":\"Estado\"\r\n}",
-					"options": {
-						"raw": {
-							"language": "json"
+				{
+					"name": "Put Cliente (ID)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"nome\": \"Nome\",\r\n    \"cpf\": \"00000000000\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{port}}/api/clientes/{{id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"clientes",
+								"{{id}}"
+							]
 						}
-					}
+					},
+					"response": []
 				},
-				"url": {
-					"raw": "http://localhost:{{port}}/api/clientes/{{id}}/editEndereco/{{idEndereco}}",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "{{port}}",
-					"path": [
-						"api",
-						"clientes",
-						"{{id}}",
-						"editEndereco",
-						"{{idEndereco}}"
-					]
+				{
+					"name": "Delete Cliente (ID)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{port}}/api/clientes/{{id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"clientes",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Patch Cliente (ID)",
+					"request": {
+						"method": "PATCH",
+						"header": [
+							{
+								"key": "Content-Type",
+								"value": "application/json-patch+json",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "[\r\n    {\r\n        \"op\": \"replace\",\r\n        \"path\": \"{Path}\",\r\n        \"value\": \"{Value}\"\r\n    }\r\n]",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{port}}/api/clientes/1",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"clientes",
+								"1"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		},
 		{
-			"name": "Deletar Endereço De Cliente (IDCliente, IDEndereço)",
-			"request": {
-				"method": "PUT",
-				"header": [],
-				"url": {
-					"raw": "http://localhost:{{port}}/api/clientes/{{id}}/deleteEndereco/{{idEndereco}}",
-					"protocol": "http",
-					"host": [
-						"localhost"
-					],
-					"port": "{{port}}",
-					"path": [
-						"api",
-						"clientes",
-						"{{id}}",
-						"deleteEndereco",
-						"{{idEndereco}}"
-					]
+			"name": "Endereços",
+			"item": [
+				{
+					"name": "Get Endereços",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{port}}/api/enderecos/",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"enderecos",
+								""
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Get Endereço (ID)",
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{port}}/api/enderecos/{{id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"enderecos",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Post Endereço",
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"idCliente\":\"2\",\r\n    \"logradouro\":\"Avenida See\",\r\n    \"numero\":\"947\",\r\n    \"bairro\":\"Bairro Das Alegrias\",\r\n    \"cidade\":\"São Bonifácio\",\r\n    \"estado\":\"SC\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{port}}/api/enderecos",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"enderecos"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Put Endereço (ID)",
+					"request": {
+						"method": "PUT",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"id\":\"0\",\r\n    \"idCliente\":\"0\",\r\n    \"logradouro\":\"Logradouro\",\r\n    \"numero\":\"000\",\r\n    \"bairro\":\"Bairro\",\r\n    \"cidade\":\"Cidade\",\r\n    \"estado\":\"Estado\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "http://localhost:{{port}}/api/enderecos/{{id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"enderecos",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "Delete Endereços (ID)",
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "http://localhost:{{port}}/api/enderecos/{{id}}",
+							"protocol": "http",
+							"host": [
+								"localhost"
+							],
+							"port": "{{port}}",
+							"path": [
+								"api",
+								"enderecos",
+								"{{id}}"
+							]
+						}
+					},
+					"response": []
 				}
-			},
-			"response": []
+			]
 		}
 	]
 }
