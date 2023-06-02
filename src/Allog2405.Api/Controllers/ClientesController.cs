@@ -146,8 +146,6 @@ public class ClientesController : ControllerBase {
         Cliente clienteEntity = ClienteData.Get().listaClientes.FirstOrDefault(n => n.id == id);
         if (clienteEntity == null) return NotFound();
 
-        //id = ClienteData.Get().listaClientes.Max(c => c.id) + 1,
-
         int newId = (clienteEntity.listaEnderecos.Any()) ? clienteEntity.listaEnderecos.Max(e => e.id) + 1 : 1;
 
         Endereco enderecoEntity = new Endereco{
@@ -168,5 +166,36 @@ public class ClientesController : ControllerBase {
             new {id = clienteToReturn.id},
             clienteToReturn
         );
+    }
+
+    [HttpPut("{idCliente}/editEndereco/{idEndereco}")]
+    public ActionResult<ClienteDTO> EditEnderecoFromCliente(int idCliente, int idEndereco, EnderecoForEditionDTO enderecoFromBody) {
+        if(enderecoFromBody.idCliente != idCliente || enderecoFromBody.idEndereco != idEndereco) return BadRequest();
+        
+        Cliente clienteEntity = ClienteData.Get().listaClientes.FirstOrDefault(n => n.id == idCliente);
+        if (clienteEntity == null) return NotFound();
+
+        Endereco enderecoEntity = clienteEntity.listaEnderecos.FirstOrDefault(e => e.id == idEndereco);
+        if(enderecoEntity == null) return NotFound();
+
+        if(enderecoFromBody.logradouro != null) enderecoEntity.logradouro = enderecoFromBody.logradouro;
+        if(enderecoFromBody.numero != null) enderecoEntity.numero = (int)enderecoFromBody.numero;
+        if(enderecoFromBody.bairro != null) enderecoEntity.bairro = enderecoFromBody.bairro;
+        if(enderecoFromBody.cidade != null) enderecoEntity.cidade = enderecoFromBody.cidade;
+        if(enderecoFromBody.estado != null) enderecoEntity.estado = enderecoFromBody.estado;
+
+        return NoContent();
+    }
+
+    [HttpPut("{idCliente}/deleteEndereco/{idEndereco}")]
+    public ActionResult<ClienteDTO> DeleteEnderecoFromCliente(int idCliente, int idEndereco) {
+        Cliente clienteEntity = ClienteData.Get().listaClientes.FirstOrDefault(n => n.id == idCliente);
+        if (clienteEntity == null) return NotFound();
+
+        Endereco enderecoEntity = clienteEntity.listaEnderecos.FirstOrDefault(e => e.id == idEndereco);
+        if(enderecoEntity == null) return NotFound();
+
+        clienteEntity.listaEnderecos.Remove(enderecoEntity);
+        return NoContent();
     }
 }
