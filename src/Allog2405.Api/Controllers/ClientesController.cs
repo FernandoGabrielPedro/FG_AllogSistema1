@@ -39,32 +39,36 @@ public class ClientesController : ControllerBase {
     }
 
     [HttpGet]
-    public ActionResult<IEnumerable<ClienteDTO>> GetClientes() {
-        List<Cliente> listaClientesFromData = ClienteData.Get().listaClientes;
-        IEnumerable<ClienteDTO> listaClientesToReturn = ClienteData.Get().listaClientes.Select(c => new ClienteDTO(c));
+    public ActionResult<IEnumerable<ClienteForGetClienteDTO>> GetClientes() {
+        IEnumerable<ClienteForGetClienteDTO> listaClientesToReturn = ClienteData.Get().listaClientes.Select(c => 
+            new ClienteForGetClienteDTO(c,
+                EnderecoData.Get().listaEnderecos.FindAll(e => e.idCliente == c.id))
+        );
         return Ok(listaClientesToReturn);
     }
 
     [HttpGet("{id:int:min(1)}", Name = "GetClientePorId")]
-    public ActionResult<ClienteDTO> GetClientePorId(int id) {
+    public ActionResult<ClienteForGetClienteDTO> GetClientePorId(int id) {
         Cliente? clienteEntity = ClienteData.Get().listaClientes.FirstOrDefault(c => c.id == id, null);
         if (clienteEntity == null) return NotFound();
 
-        ClienteDTO clienteToReturn = new ClienteDTO(clienteEntity);
+        ClienteForGetClienteDTO clienteToReturn = new ClienteForGetClienteDTO(clienteEntity,
+            EnderecoData.Get().listaEnderecos.FindAll(e => e.idCliente == clienteEntity.id));
         return Ok(clienteToReturn);
     }
 
     [HttpGet("cpf/{cpf}")]
-    public ActionResult<ClienteDTO> GetClientePorCpf(string cpf) {
+    public ActionResult<ClienteForGetClienteDTO> GetClientePorCpf(string cpf) {
         Cliente? clienteEntity = ClienteData.Get().listaClientes.FirstOrDefault(c => c.cpf == cpf, null);
         if(clienteEntity == null) return NotFound();
 
-        ClienteDTO clienteToReturn = new ClienteDTO(clienteEntity);
+        ClienteForGetClienteDTO clienteToReturn = new ClienteForGetClienteDTO(clienteEntity,
+            EnderecoData.Get().listaEnderecos.FindAll(e => e.idCliente == clienteEntity.id));
         return Ok(clienteToReturn);
     }
 
     [HttpPost]
-    public ActionResult<ClienteDTO> CreateCliente(ClienteForCreationDTO clienteForCreationDTO) {
+    public ActionResult<ClienteForGetClienteDTO> CreateCliente(ClienteForCreationDTO clienteForCreationDTO) {
 
         int cpfValidacao = ValidarCpf(clienteForCreationDTO.cpf);
         switch(cpfValidacao) {
@@ -72,17 +76,19 @@ public class ClientesController : ControllerBase {
             case 2: return UnprocessableEntity();
             case 3: return BadRequest();
         }
-        clienteForCreationDTO.nome ??= String.Empty;
+
+        int newId = (ClienteData.Get().listaClientes.Any()) ? ClienteData.Get().listaClientes.Max(c => c.id) + 1 : 1;
 
         Cliente clienteEntity = new Cliente {
-            id = ClienteData.Get().listaClientes.Max(c => c.id) + 1,
+            id = newId,
             nome = clienteForCreationDTO.nome,
             cpf = clienteForCreationDTO.cpf
         };
 
         ClienteData.Get().listaClientes.Add(clienteEntity);
 
-        ClienteDTO clienteToReturn = new ClienteDTO(clienteEntity);
+        ClienteForGetClienteDTO clienteToReturn = new ClienteForGetClienteDTO(clienteEntity,
+            EnderecoData.Get().listaEnderecos.FindAll(e => e.idCliente == clienteEntity.id));
 
         return CreatedAtRoute(
             "GetClientePorId",
@@ -92,11 +98,11 @@ public class ClientesController : ControllerBase {
     }
 
     [HttpPut("{id}")]
-    public ActionResult<ClienteDTO> EditCliente(int id, ClienteForEditionDTO clienteForEditionDTO) {
+    public ActionResult<ClienteForGetClienteDTO> EditCliente(int id, ClienteForEditionDTO clienteForEditionDTO) {
 
         if(clienteForEditionDTO.id != id) return BadRequest();
 
-        Cliente? clienteEntity = ClienteData.Get().listaClientes.FirstOrDefault(n => n.id == id, null);
+        Cliente? clienteEntity = ClienteData.Get().listaClientes.FirstOrDefault(c => c.id == id, null);
         if(clienteEntity == null) return NotFound();
         
         if(clienteForEditionDTO.nome != null) clienteEntity.nome = clienteForEditionDTO.nome;
@@ -113,9 +119,9 @@ public class ClientesController : ControllerBase {
     }
 
     [HttpDelete("{id}")]
-    public ActionResult<ClienteDTO> DeleteClientePorId(int id) {
+    public ActionResult<ClienteForGetClienteDTO> DeleteClientePorId(int id) {
 
-        Cliente clienteEntity = ClienteData.Get().listaClientes.FirstOrDefault(n => n.id == id);
+        Cliente clienteEntity = ClienteData.Get().listaClientes.FirstOrDefault(c => c.id == id);
         if (clienteEntity == null) return NotFound();
 
         ClienteData.Get().listaClientes.Remove(clienteEntity);
@@ -123,7 +129,7 @@ public class ClientesController : ControllerBase {
     }
 
     [HttpPatch("{id}")]
-    public ActionResult<ClienteDTO> PatchCliente([FromRoute] int id, [FromBody] JsonPatchDocument<ClienteForPatchDTO> patchDocument) {
+    public ActionResult<ClienteForGetClienteDTO> PatchCliente([FromRoute] int id, [FromBody] JsonPatchDocument<ClienteForPatchDTO> patchDocument) {
         Cliente clienteEntity = ClienteData.Get().listaClientes.FirstOrDefault(n => n.id == id);
         if (clienteEntity == null) return NotFound();
 
